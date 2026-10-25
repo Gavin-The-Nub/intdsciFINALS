@@ -26,12 +26,12 @@ def add_code(source):
     })
 
 # --- TITLE & METADATA ---
-add_md("""# DE LA SALLE LIPA
+add_md(r"""# DE LA SALLE LIPA
 ### College of Information Technology and Engineering — Computer Science Department
 **Course:** Introduction to Data Science (Intdsci) — Final Project  
 **Project Title:** Seoul Public Bike Hourly Rental Demand Classification Pipeline  
 **Dataset:** Seoul Bike Sharing Demand Dataset (UCI Machine Learning Repository)  
-**Authors:** Student Project Group  
+**Authors / Group Members:** [Group Member 1], [Group Member 2], [Group Member 3]  
 ***
 
 ## Executive Overview & Grading Rubric Alignment
@@ -44,13 +44,13 @@ This notebook implements an end-to-end, reproducible supervised machine learning
 * **Section F:** Model evaluation featuring 2x2 confusion matrices, classification metrics (Accuracy, Precision, Recall, F1), error analysis (Type I vs. Type II costs), and real-world system limitations.""")
 
 # --- SECTION A ---
-add_md("""---
+add_md(r"""---
 ## A. Introduction
 
 Urban public bike-sharing systems serve as a cornerstone of sustainable, low-carbon metropolitan transit; however, fleet operators face severe operational bottlenecks when high-demand surges exhaust station inventory during commute peaks or when adverse weather causes systemic fleet underutilization. This project establishes a reproducible supervised machine learning classification pipeline using 8,760 hourly observations from the Seoul Public Bike sharing system to predict whether a given operational hour will experience **High Demand ($\ge 505$ rentals/hour)** versus **Low Demand ($< 505$ rentals/hour)**. By formulating this task as binary classification based on the median demand threshold, municipal fleet managers can reliably anticipate dock starvation and reallocate redistribution vans up to several hours in advance, optimizing vehicle uptime and public transit integration.""")
 
 # --- SECTION B ---
-add_md("""---
+add_md(r"""---
 ## B. Data Collection and Preprocessing
 
 ### 1. Dataset Overview & Data Dictionary
@@ -93,7 +93,7 @@ df = pd.read_csv(raw_path, encoding="latin1")
 print(f"Dataset Successfully Loaded! Dimensions: {df.shape[0]:,} rows x {df.shape[1]} columns")
 df.head(5)""")
 
-add_md("""### 2. Traceable Data Cleaning Log
+add_md(r"""### 2. Traceable Data Cleaning Log
 The following checks verify structural integrity, schema conformity, missing data, and duplicate observations without inventing issues or dropping valid rows.""")
 
 add_code("""# Step 1: Standardize column names to remove special characters and byte encodings
@@ -121,7 +121,7 @@ print(f"2. Total missing values: {null_counts.sum()} (0 missing across all featu
 print(f"3. Duplicate rows identified: {duplicate_count}")
 print(f"4. Confirmed non-functioning hours: {(df['Functioning_Day'] == 'No').sum()} hours where rentals are exactly 0.")""")
 
-add_md("""### 3. Exploratory Data Analysis (EDA) & Interpretations
+add_md(r"""### 3. Exploratory Data Analysis (EDA) & Interpretations
 We construct three labeled analytical figures to understand ridership dynamics:
 1. **Plot 1:** Target distribution showing the continuous skewness and median threshold ($504.5$).
 2. **Plot 2:** Bimodal commute curve across all four seasons.
@@ -183,13 +183,13 @@ plt.show()
 # Clean up temporary EDA column
 df.drop(columns=['Precipitation_Status'], inplace=True)""")
 
-add_md("""#### Evidence-Based Interpretations:
+add_md(r"""#### Evidence-Based Interpretations:
 1. **Interpretation 1 (Right-Skewed Target Distribution):** The raw rental demand displays strong positive skewness with a median of $504.5$ and a mean of $704.6$. Converting the target into binary classes using the median cutoff ($\ge 505$) guarantees an exact $50.0\%$ / $50.0\%$ balanced distribution (4,380 Low Demand vs. 4,380 High Demand), eliminating class imbalance bias.
 2. **Interpretation 2 (Bimodal Commuter Rhythm):** Figure 2 proves that bike demand is predominantly commute-driven across all seasons, producing distinct peaks at **8:00 AM** ($\approx 1,000$ bikes/hr) and **6:00 PM** ($\approx 1,600$ bikes/hr). Demand in Summer and Autumn peaks nearly $4\times$ higher than Winter due to sub-zero temperatures.
 3. **Interpretation 3 (Inclement Weather and System Shutdown):** Rain and snow severely depress ridership regardless of time of day (median drops below $80$ bikes/hr). Furthermore, all $295$ non-functioning hours record exactly $0$ rentals due to planned maintenance or severe weather shutdowns.""")
 
 # --- SECTION C ---
-add_md("""---
+add_md(r"""---
 ## C. Feature Engineering and Selection
 
 ### 1. Target Encoding and Temporal Feature Extraction
@@ -215,7 +215,7 @@ print(y.value_counts())
 print(f"Feature matrix X shape: {X.shape}")
 print(f"Engineered features added: 'Month' (1-12), 'DayOfWeek' (0-6)")""")
 
-add_md("""### 2. Pearson Correlation Analysis
+add_md(r"""### 2. Pearson Correlation Analysis
 We compute linear correlations to identify the strongest predictors and evaluate potential multicollinearity.""")
 
 add_code("""# Correlation Matrix of Numerical Features
@@ -236,13 +236,13 @@ plt.show()
 print("Ranked Pearson Correlation with Bike Rentals:")
 print(corr_matrix['Rented_Bike_Count'].sort_values(ascending=False).to_string())""")
 
-add_md("""#### Feature Justification & Multicollinearity Findings:
+add_md(r"""#### Feature Justification & Multicollinearity Findings:
 * **Top Positive Predictors:** `Temperature_C` ($r = 0.54$) and `Hour` ($r = 0.41$) are the primary drivers of ridership. Solar radiation ($r = 0.26$) also correlates positively with outdoor activity.
 * **Top Negative Predictors:** `Humidity_Pct` ($r = -0.20$), `Snowfall_cm` ($r = -0.14$), and `Rainfall_mm` ($r = -0.12$) deter cycling.
 * **Severe Collinearity Warning:** `Temperature_C` and `Dew_Point_C` exhibit a very high correlation of **$r = 0.913$**, which can inflate variance in linear regression models. As planned, we test both an all-features model and an ablated model without `Dew_Point_C`.""")
 
 # --- SECTION D ---
-add_md("""---
+add_md(r"""---
 ## D. Data Splitting
 
 In strict adherence to the project specification:
@@ -264,7 +264,7 @@ print(y_train.value_counts().to_dict())
 print("Testing Target Class Distribution:")
 print(y_test.value_counts().to_dict())""")
 
-add_md("""### 3. Pipeline Preprocessing (Showing Transformed Output)
+add_md(r"""### 3. Pipeline Preprocessing (Showing Transformed Output)
 To satisfy the rubric requirement (*"Discuss the preprocessing techniques used and show the output after each technique"*), we define the transformers and inspect the preprocessed training array.""")
 
 add_code("""from sklearn.preprocessing import StandardScaler, OneHotEncoder
@@ -295,7 +295,7 @@ print("Sample Transformed Training Features (First 2 observations):")
 print(np.round(X_train_transformed[:2], 3))""")
 
 # --- SECTION E ---
-add_md("""---
+add_md(r"""---
 ## E. Model Selection and Training
 
 We implement and contrast three algorithms to fulfill Learning Outcomes 3 & 4:
@@ -347,7 +347,7 @@ for name, pipe in pipelines.items():
 print("All models successfully trained on training partition!")""")
 
 # --- SECTION F ---
-add_md("""---
+add_md(r"""---
 ## F. Model Evaluation and Confusion Matrix Interpretation
 
 ### 1. Confusion Matrix Visualizations
@@ -371,7 +371,7 @@ for idx, m_name in enumerate(eval_models):
 plt.tight_layout()
 plt.show()""")
 
-add_md("""### 2. Comprehensive Metrics Summary Table""")
+add_md(r"""### 2. Comprehensive Metrics Summary Table""")
 
 add_code("""from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
@@ -400,14 +400,14 @@ display(eval_df.style.format({
     'F1-Score': '{:.4f}'
 }).highlight_max(subset=['Accuracy', 'F1-Score'], color='#d4edda'))""")
 
-add_md("""### 3. Detailed Classification Reports""")
+add_md(r"""### 3. Detailed Classification Reports""")
 
 add_code("""for name in ['Logistic Regression', 'Random Forest Classifier']:
     print(f"==================== {name.upper()} ====================")
     y_pred = trained_pipelines[name].predict(X_test)
     print(classification_report(y_test, y_pred, target_names=['Low Demand (<505)', 'High Demand (>=505)'], digits=4))""")
 
-add_md("""### 4. Gini Feature Importance Analysis (Random Forest)""")
+add_md(r"""### 4. Gini Feature Importance Analysis (Random Forest)""")
 
 add_code("""rf_step = trained_pipelines['Random Forest Classifier'].named_steps['clf']
 feature_names = [f.replace('num__', '').replace('cat__', '') for f in transformed_feature_names]
@@ -428,7 +428,7 @@ plt.show()
 
 print(feat_imp_df.head(10).to_string(index=False))""")
 
-add_md("""### 5. Error Analysis and Practical Interpretation
+add_md(r"""### 5. Error Analysis and Practical Interpretation
 * **True Negatives ($TN = 855$):** Low-demand hours correctly classified as Low. Prevents wasteful logistics dispatch.
 * **True Positives ($TP = 821$):** High-demand hours correctly classified as High. Enables timely station replenishment before morning/evening peaks.
 * **False Positives (Type I Error, $FP = 30$):** Model predicts High Demand, but actual is Low. Result: Fleet operators over-allocate bicycles, wasting driver fuel and crowding docks.
@@ -448,9 +448,9 @@ nb_dict = {
     "cells": cells,
     "metadata": {
         "kernelspec": {
-            "display_name": "Python (Intdsci Finals)",
+            "display_name": "Python 3",
             "language": "python",
-            "name": "intdsci_kernel"
+            "name": "python3"
         },
         "language_info": {
             "name": "python",
@@ -461,7 +461,7 @@ nb_dict = {
     "nbformat_minor": 4
 }
 
-out_path = "seoul_bike_ml_project.ipynb"
+out_path = "_archive/seoul_bike_ml_project_generated.ipynb"  # archived to prevent overwriting active notebook
 with open(out_path, "w", encoding="utf-8") as f:
     json.dump(nb_dict, f, indent=1)
 

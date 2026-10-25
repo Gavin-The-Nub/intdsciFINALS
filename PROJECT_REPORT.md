@@ -5,9 +5,10 @@
 # FINAL PROJECT REPORT: Supervised Machine Learning Pipeline for Hourly Bike-Sharing Demand Classification in Seoul
 **Course:** Introduction to Data Science (Intdsci)  
 **Academic Year:** 2025–2026  
+**Authors / Group Members:** [Group Member 1], [Group Member 2], [Group Member 3]  
 **Dataset:** Seoul Bike Sharing Demand Dataset (UCI Machine Learning Repository)  
-**Notebook Link:** [`seoul_bike_ml_project.ipynb`](file:///Users/macbookairm2/school/intdsci/finals/seoul_bike_ml_project.ipynb)  
-**Pipeline Script:** [`build_and_execute_notebook.py`](file:///Users/macbookairm2/school/intdsci/finals/build_and_execute_notebook.py)  
+**Notebook Link:** [`seoul_bike_ml_project.ipynb`](./seoul_bike_ml_project.ipynb)  
+**Pipeline Script:** [`build_and_execute_notebook.py`](./_archive/build_and_execute_notebook.py)  
 
 ---
 
@@ -112,7 +113,7 @@ In accordance with the rubric requirement (*"Before and after checks; justified 
 
 * **Visual Design:** A side-by-side comparative boxplot and barplot displaying ridership variations under precipitation states (Rain vs. Clear) and operational status (Functioning Day vs. Closed).
 * **Interpretation 3 (Elasticity to Weather Shocks and Zero-Rental Guarantees):** 
-  Precipitation acts as a powerful demand suppressant: median rentals drop from $582$ bikes/hour during clear weather to under $80$ bikes/hour during rain events ($p < 0.001$). Furthermore, the right panel confirms that when `Functioning_Day == 'No'` ($n = 295$), rentals are identically zero. Machine learning architectures must give decisive negative weight to precipitation and non-functioning flags.
+  Precipitation acts as a powerful demand suppressant: median rentals drop from $606$ bikes/hour during clear weather to under $80$ bikes/hour during rain events. Furthermore, the right panel confirms that when `Functioning_Day == 'No'` ($n = 295$), rentals are identically zero. Machine learning architectures must give decisive negative weight to precipitation and non-functioning flags.
 
 ---
 
@@ -158,7 +159,7 @@ The correlation matrix reveals an extreme collinearity between **`Temperature_C`
 * **Empirical Result:** 
   * Logistic Regression (All Features): Accuracy = **$86.93\%$**, F1 = **$0.8665$**.
   * Logistic Regression (No Dew Point): Accuracy = **$86.99\%$**, F1 = **$0.8671$**.
-  * *Conclusion:* Removing `Dew_Point_C` slightly improved out-of-sample accuracy while producing a leaner, more robust model and eliminating coefficient distortion. This validates the student's initial hypothesis to *"safest is all features, if low outcome experiment with variable using correlation"*.
+  * *Conclusion:* Removing `Dew_Point_C` slightly improved out-of-sample accuracy while producing a leaner, more robust model and eliminating coefficient distortion. This validates our initial hypothesis that testing feature subsets via correlation analysis can streamline the model while maintaining or marginally improving classification accuracy.
 
 ### C.5 Preprocessing Pipeline and Transformed Feature Inspection
 To prevent data snooping, preprocessing was wrapped in a `ColumnTransformer`:
@@ -236,7 +237,7 @@ $$\text{Baseline: } \begin{bmatrix} 0 & 885 \\ 0 & 867 \end{bmatrix} \quad\quad 
 | **Baseline (`DummyClassifier`)** | All Features | $49.49\%$ | $0.4949$ | $1.0000$ | $0.6621$ | $0$ | $885$ | $0$ | $867$ |
 | **Logistic Regression** | All Features | $86.93\%$ | $0.8762$ | $0.8570$ | $0.8665$ | $780$ | $105$ | $124$ | $743$ |
 | **Logistic Regression (Ablated)**| Drop `Dew_Point_C`| $86.99\%$ | $0.8763$ | $0.8581$ | $0.8671$ | $780$ | $105$ | $123$ | $744$ |
-| **Random Forest Classifier** | **All Features** | **$95.66\%$** | **$0.9647$** | **$0.9469$** | **$0.9558$** | **$855$** | **$30$** | **$46$** | **$821$** |
+| **Random Forest Classifier** | **All Features** | **$95.55\%$** | **$0.9647$** | **$0.9469$** | **$0.9558$** | **$855$** | **$30$** | **$46$** | **$821$** |
 
 ### F.3 Detailed Classification Reports
 
@@ -259,7 +260,7 @@ High Demand (>=505)     0.8762    0.8570    0.8665       867
  Low Demand (<505)      0.9489    0.9661    0.9574       885
 High Demand (>=505)     0.9647    0.9469    0.9558       867
 
-          accuracy                          0.9566      1752
+          accuracy                          0.9555      1752
          macro avg      0.9568    0.9565    0.9566      1752
       weighted avg      0.9567    0.9566    0.9566      1752
 ```
@@ -290,7 +291,7 @@ In municipal fleet logistics, false predictions carry asymmetric real-world cons
 * **Type II Error — False Negative ($FN = 46$ hours):**
   * *Operational Consequence:* The system predicts low demand, but actual demand surges. Stations experience dock starvation. Commuters arrive to find zero bicycles, causing missed connections, transit delays, and reputational erosion.
 * **Trade-off Summary:** 
-  The Random Forest classifier reduces Type I errors to just **$30$ events** and Type II errors to **$46$ events** across $1,752$ hours ($95.66\%$ overall accuracy). Its balanced precision ($96.5\%$) and recall ($94.7\%$) ensure that neither over-allocation nor station starvation occurs frequently.
+  The Random Forest classifier reduces Type I errors to just **$30$ events** and Type II errors to **$46$ events** across $1,752$ hours ($95.55\%$ overall accuracy). Its balanced precision ($96.5\%$) and recall ($94.7\%$) ensure that neither over-allocation nor station starvation occurs frequently.
 
 ### F.6 Model Limitations and Risk Analysis
 1. **Spatial Aggregation:** The dataset records aggregate system-wide rentals across Seoul. In practice, demand varies dramatically by district (e.g., Gangnam commercial hub vs. Han River recreational paths). Spatial GPS coordinates per station would be needed for micro-station routing.
